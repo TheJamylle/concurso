@@ -8,4 +8,6 @@ const app = express();
 app.use(express.json());
 app.use(routes);
 
+console.log("MUDEI ALGO");
+
 app.listen(7777, () => console.log("Escutando na porta 7777"));
