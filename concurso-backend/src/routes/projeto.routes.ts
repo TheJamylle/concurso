@@ -25,6 +25,26 @@ projetoRouter.get('/', async (request, response) => {
   }
 });
 
+projetoRouter.get('/naoAvaliados', async (request, response) => {
+  try {
+    const projetos = await new ProjetoService().listNaoAvaliados();
+
+    return response.json(projetos);
+  } catch (error) {
+    return response.status(401).json({ error: error.message });
+  }
+});
+
+projetoRouter.get('/avaliados', async (request, response) => {
+  try {
+    const projetos = await new ProjetoService().listAvaliados();
+
+    return response.json(projetos);
+  } catch (error) {
+    return response.status(401).json({ error: error.message });
+  }
+});
+
 projetoRouter.get('/:id', async (request, response) => {
   try {
     const id_projeto = request.params.id;
