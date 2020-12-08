@@ -3,6 +3,7 @@ import Candidato from '../models/Candidato';
 import Avaliador from '../models/Avaliador';
 import Projeto from '../models/Projeto';
 import { getConnection } from 'typeorm';
+import Telefone from '../models/Telefone';
 
 interface General {
     nome: string;
@@ -63,6 +64,15 @@ class PessoaService {
 
         pessoa.candidato = candidato;
         await pessoa.save();
+
+        if(telefone) {
+            const tel = new Telefone();
+            tel.ddd = telefone.ddd;
+            tel.numero = telefone.numero;
+            tel.tipo = telefone.tipo;
+            tel.pessoa = pessoa;
+            await tel.save();
+        }
 
         return candidato;
     }
@@ -134,7 +144,7 @@ class PessoaService {
     }
 
     public async createAvaliador(
-        { nome, cpf, data_nascimento, endereco }: General,
+        { nome, cpf, data_nascimento, endereco, telefone }: General,
         registro: string): Promise<Avaliador> {
         const verificaPessoa = await Pessoa.findOne({ where: { cpf } });
 
@@ -155,6 +165,15 @@ class PessoaService {
 
         pessoa.avaliador = avaliador;
         await pessoa.save();
+
+        if(telefone) {
+            const tel = new Telefone();
+            tel.ddd = telefone.ddd;
+            tel.numero = telefone.numero;
+            tel.tipo = telefone.tipo;
+            tel.pessoa = pessoa;
+            await tel.save();
+        }
 
         return avaliador;
     }
