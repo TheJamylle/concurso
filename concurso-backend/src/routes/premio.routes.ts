@@ -1,4 +1,5 @@
 import { Router } from 'express';
+import CronogramaService from '../services/CronogramaService';
 import PremioService from '../services/PremioService';
 
 const premioRouter = Router();
@@ -20,6 +21,18 @@ premioRouter.get('/', async (request, response) => {
     const premios = await new PremioService().list();
 
     return response.json(premios);
+  } catch (error) {
+    return response.status(401).json({ error: error.message });
+  }
+});
+
+premioRouter.get('/:id/cronogramas', async (request, response) => {
+  try {
+    const id_premio = request.params.id;
+
+    const cronogramas = await new CronogramaService().listByPremio(id_premio);
+
+    return response.json(cronogramas);
   } catch (error) {
     return response.status(401).json({ error: error.message });
   }
