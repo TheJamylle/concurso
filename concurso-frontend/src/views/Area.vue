@@ -46,8 +46,7 @@
                                     <br>
                                 <base-button @click="delArea(area.id_area)" type="danger" style="float: right;">
                                         X
-                                </base-button> 
-                                <modal-area></modal-area>                                
+                                </base-button>                           
                                 </card>
                                                            
                             </div>
@@ -104,7 +103,6 @@
 <script>
 import axios from 'axios';
 import Card from '../components/Card.vue';
-import ModalArea from './components/ModalArea.vue';
 
 export default {
   name: "area",
@@ -147,7 +145,6 @@ export default {
   },
   components: {
       Card,
-      ModalArea,
   }
 };
 </script>

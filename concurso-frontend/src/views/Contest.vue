@@ -1,29 +1,15 @@
 <template>
-    <div id="json">
-        <h1>AAAAAAAAAAAAA</h1>
-        {{ dt }}
+    <div>
+        <carousel></carousel>
     </div>
 </template>
-
 <script>
-import axios from 'axios';
+import Carousel from "./components/Carousel";
+
 export default {
-    name: "contest",
-    el: '#json',
-    data () {
-        return {
-        dt: null
-        }
-    },
-    mounted () {
-        axios
-        .get('https://localhost:7777/area/')
-        .then(response => (this.dt = response))
-    }
-}
+  name: "contest",
+  components: {
+    Carousel,
+  }
+};
 </script>
-
-<style>
-
-</style>
-
