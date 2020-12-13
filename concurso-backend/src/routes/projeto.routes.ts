@@ -45,6 +45,16 @@ projetoRouter.get('/avaliados', async (request, response) => {
   }
 });
 
+projetoRouter.get('/vencedores', async (request, response) => {
+  try {
+    const projetos = await new ProjetoService().listVencedores();
+
+    return response.json(projetos);
+  } catch (error) {
+    return response.status(401).json({ error: error.message });
+  }
+});
+
 projetoRouter.get('/:id', async (request, response) => {
   try {
     const id_projeto = request.params.id;
