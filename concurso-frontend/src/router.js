@@ -8,6 +8,7 @@ import Contest from "./views/Contest.vue";
 import Area from "./views/Area.vue";
 import Avaliador from "./views/Avaliador.vue";
 import Login from "./views/Login.vue";
+import Premio from "./views/Premio.vue";
 import Projeto from "./views/Projeto.vue";
 import Register from "./views/Register.vue";
 import Profile from "./views/Profile.vue";
@@ -59,6 +60,15 @@ export default new Router({
       components: {
         header: AppHeader,
         default: Projeto,
+        footer: AppFooter
+      }
+    },
+    {
+      path: "/premio",
+      name: "premio",
+      components: {
+        header: AppHeader,
+        default: Premio,
         footer: AppFooter
       }
     },
