@@ -62,9 +62,6 @@ class PessoaService {
         candidato.projeto = projeto;
         await candidato.save();
 
-        pessoa.candidato = candidato;
-        await pessoa.save();
-
         if(telefone) {
             const tel = new Telefone();
             tel.ddd = telefone.ddd;
@@ -139,7 +136,7 @@ class PessoaService {
     public async listCandidatos(): Promise<Array<Candidato>> {
         const candidatos = await getConnection()
                     .createQueryBuilder()
-                    .select('candidato.*, pessoa.nome, projeto.titulo')
+                    .select('candidato.*, pessoa.nome, projeto.titulo, pessoa.data_nascimento, pessoa.cpf')
                     .from(Candidato, '')
                     .addFrom(Pessoa, '')
                     .addFrom(Projeto, '')
@@ -258,7 +255,7 @@ class PessoaService {
     public async listAvaliadores(): Promise<Array<Avaliador>> {
         const avaliadores = await getConnection()
         .createQueryBuilder()
-        .select('avaliador.*, pessoa.nome')
+        .select('avaliador.*, pessoa.nome, pessoa.data_nascimento')
         .from(Avaliador, '')
         .addFrom(Pessoa, '')
         .where('id_pessoa_fk = id_pessoa')

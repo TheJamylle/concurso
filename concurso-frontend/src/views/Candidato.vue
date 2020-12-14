@@ -39,10 +39,60 @@
                     <td>{{ cand.nome }}</td>
                     <td>{{ cand.titulo }}</td>
                     <td>
-                        
-                        <base-button @click="delCandidato(cand.id_candidato)" title="Excluir candidato" type="danger" >
-                            X
+                        <base-button type="info" title="Visualizar Dados do Candidato" @click="infoCandidato(cand.numero_inscricao)">
+                            <i class="ni ni-circle-08"></i>
                         </base-button>
+                        
+                        <base-button @click="delCandidato(cand.numero_inscricao)" title="Excluir candidato" type="danger" >
+                            <i class="ni ni-fat-remove"></i>
+                        </base-button>
+
+                        <modal :show.sync="modals.modal"
+                            gradient="secondary"
+                            modal-classes="modal-secondary modal-dialog-centered">
+                            <h5 slot="header" style="color: #0EBAB1" class="modal-title" id="modal-title-notification">Informações do Candidato</h5>
+
+                            <template>
+                                    <form role="form" >
+                                        <h6 style="color: #0EBAB1"> <b>Nome</b> </h6>
+                                        <base-input alternative
+                                            class="mb-3"
+                                            v-model="candidatoEscolhido.nome"
+                                            >
+                                        </base-input>
+                                        <h6 style="color: #0EBAB1"> <b>CPF</b> </h6>
+                                        <base-input alternative
+                                            class="mb-3"
+                                            v-model="candidatoEscolhido.cpf"
+                                            >
+                                        </base-input>
+                                        <h6 style="color: #0EBAB1"> <b>Data de Nascimento</b> </h6>
+                                        <base-input alternative
+                                            class="mb-3"
+                                            v-model="candidatoEscolhido.data_nascimento"
+                                            >
+                                        </base-input>
+                                        <!-- <h6 style="color: #0EBAB1"> <b>Telefone</b> </h6>
+                                        <base-input alternative
+                                            class="mb-3"
+                                            v-model="candidatoEscolhido.telefone.ddd"
+                                            style="width: 20%; float: left">
+                                        </base-input>
+                                        <base-input alternative
+                                                    class="mb-3"
+                                                    v-model="candidatoEscolhido.telefone.numero"
+                                            style="width: 70%; float: right">
+                                        </base-input> -->
+                                    </form>
+                                </template>
+
+                            <template slot="footer">
+                                <base-button type="white" class="ml-auto"
+                                            @click="modals.modal = false">OK</base-button>
+                            </template>
+                        </modal>
+                        
+                        
                     </td>
                     </tr>
                 </tbody>
@@ -54,17 +104,23 @@
 </template>
 <script>
 import axios from 'axios';
+import Modal from "@/components/Modal.vue";
 import ModalCandidato from './components/ModalCandidato.vue';
 
 export default {
-  components: { ModalCandidato },
+  components: { ModalCandidato, Modal },
   name: "candidato",
-  el: '#cans',
 
   data () {
     return {
        submitted: false,
-       candidatos: []
+       candidatos: [],
+       modals: {
+        modal: false,
+       },
+       candidatoEscolhido: {
+
+       }
     }
   },
 
@@ -80,8 +136,31 @@ export default {
         });
     },
 
+    async infoCandidato(insc) {
+      for(let i = 0; i < this.candidatos.length; i++) {
+        if(this.candidatos[i].numero_inscricao == insc) {
+          this.candidatoEscolhido = this.candidatos[i];
+          break;
+        }
+      }
+      this.candidatoEscolhido.data_nascimento = this.estilizaData(this.candidatoEscolhido.data_nascimento);
+      this.modals.modal = true;
+    },
+
+    estilizaData (data) {
+      const dataRenderizada = 
+            (
+             (new Date(data).getDate()+1) > 9 ? (new Date(data).getDate()+1) : ("0"+(new Date(data).getDate()+1))
+            )+"/"+
+            (
+             (new Date(data).getMonth()+1) > 9 ? (new Date(data).getMonth()+1) : ("0"+(new Date(data).getMonth()+1))
+            )+"/"+new Date(data).getFullYear();
+
+      return dataRenderizada;
+    },
+
     async delCandidato(id) {
-      await axios.delete(`http://localhost:7777/candidato/${id}`).then();
+      await axios.delete(`http://localhost:7777/pessoa/candidatos/${id}`).then();
       this.getAllCandidatos();
     }
   }

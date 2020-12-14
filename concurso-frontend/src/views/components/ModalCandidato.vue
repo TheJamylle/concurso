@@ -135,7 +135,7 @@ export default {
           uf: '',
         }, 
         telefone: {
-          tipo: '',
+          tipo: 'pessoal',
           ddd: '',
           numero: '',
         },
@@ -174,8 +174,9 @@ export default {
         cpf: this.candidato.cpf,
         endereco: this.candidato.endereco,
         telefone: this.candidato.telefone,
-        data_nascimento: this.candidato.data_nascimento, 
-        id_projeto: this.candidato.id_projeto 
+        data_nascimento: new Date(this.candidato.data_nascimento), 
+        id_projeto: this.candidato.id_projeto,
+        numero_inscricao: this.candidato.numero_inscricao
       })
         .then();
         this.modals.modal = false;
