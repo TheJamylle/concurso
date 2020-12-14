@@ -24,14 +24,13 @@
         </div>
         </section>
         <section class="section section-skew">
-            <div class="container">
-                <card shadow class="card-profile mt--300" no-body>
+            <div class="container" id="av">
+                <card shadow class="card-profile mt--300" no-body v-for="avaliador in avaliadores" :key="avaliador.id_avaliador">
                     <div class="px-4">
                         <div class="text-center mt-5">
-                            <h3>Jessica Jones</h3>
-                            <div class="h6 font-weight-300"><i class="ni location_pin mr-2"></i>Bucharest, Romania</div>
-                            <div class="h6 mt-4"><i class="ni business_briefcase-24 mr-2"></i>Solution Manager - Creative Tim Officer</div>
-                            <div><i class="ni education_hat mr-2"></i>University of Computer Science</div>
+                            <h3>{{ avaliador.nome }}</h3>
+                            <div class="h6 font-weight-300"><i class="ni location_pin mr-2"></i>Registro: {{ avaliador.registro }}</div>
+                            <div class="h6 mt-4"><i class="ni business_briefcase-24 mr-2"></i>Data de Nascimento: {{ avaliador.data_nascimento }}</div>
                         </div>
                         <br>
                     </div>
@@ -41,7 +40,30 @@
     </div>
 </template>
 <script>
-export default {};
+import axios from 'axios';
+
+export default {
+  name: 'avaliador',
+  el: '#av',
+
+  data () {
+    return {
+      avaliadores: []
+    }
+  },
+
+  mounted () {
+    this.getAllAvaliadores();
+  },
+
+  methods: {
+    async getAllAvaliadores () {
+      await axios.get(`http://localhost:7777/pessoa/avaliadores`).then(response => {
+        this.avaliadores = response.data;
+      });
+    }
+  }
+};
 </script>
 <style>
 </style>

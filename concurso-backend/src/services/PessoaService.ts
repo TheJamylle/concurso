@@ -239,7 +239,14 @@ class PessoaService {
     }
 
     public async getByIDAvaliador(id_avaliador: string): Promise<Avaliador> {
-        const avaliador = await Avaliador.findOne({ where: { id_avaliador } });
+        const avaliador = await getConnection()
+        .createQueryBuilder()
+        .select('avaliador.*, pessoa.nome')
+        .from(Avaliador, '')
+        .addFrom(Pessoa, '')
+        .where('id_avaliador = :id', { id: id_avaliador })
+        .andWhere('id_pessoa_fk = id_pessoa')
+        .getRawOne();
 
         if(!avaliador) {
             throw new Error("ID do avaliador não existe");
@@ -249,7 +256,13 @@ class PessoaService {
     }
 
     public async listAvaliadores(): Promise<Array<Avaliador>> {
-        const avaliadores = await Avaliador.find();
+        const avaliadores = await getConnection()
+        .createQueryBuilder()
+        .select('avaliador.*, pessoa.nome')
+        .from(Avaliador, '')
+        .addFrom(Pessoa, '')
+        .where('id_pessoa_fk = id_pessoa')
+        .getRawMany();
 
         return avaliadores;
     }
