@@ -23,9 +23,10 @@
             
         </div>
         </section>
-        <section class="section section-skew">
-            <div class="container" id="av">
-                <card shadow class="card-profile mt--300" no-body v-for="avaliador in avaliadores" :key="avaliador.id_avaliador">
+        <section class="section section-skew" style="margin-top: -15%;">
+          <div class="container">
+            <div class="col col-grid align-items-center" id="av">
+                <card shadow class="shadow-lg--hover mt-5" no-body v-for="avaliador in avaliadores" :key="avaliador.id_avaliador">
                     <div class="px-4">
                         <div class="text-center mt-5">
                             <h3>{{ avaliador.nome }}</h3>
@@ -36,13 +37,18 @@
                     </div>
                 </card>
             </div>
+          </div>
+            <modal-avaliador ></modal-avaliador>
         </section>
+        
     </div>
 </template>
 <script>
 import axios from 'axios';
+import ModalAvaliador from './components/ModalAvaliador.vue';
 
 export default {
+  components: { ModalAvaliador },
   name: 'avaliador',
   el: '#av',
 
@@ -54,6 +60,10 @@ export default {
 
   mounted () {
     this.getAllAvaliadores();
+  },
+
+  watch () {
+
   },
 
   methods: {
