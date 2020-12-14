@@ -20,15 +20,70 @@
                                 </base-input>
                                 <base-input alternative
                                             class="mb-3"
-                                            placeholder="Email"
-                                            addon-left-icon="ni ni-email-83">
+                                            placeholder="CPF"
+                                            v-model="candidato.cpf"
+                                            addon-left-icon="ni ni-circle-08">
                                 </base-input>
                                 <base-input alternative
-                                            placeholder="Password"
-                                            addon-left-icon="ni ni-lock-circle-open">
+                                            class="mb-3"
+                                            v-model="candidato.data_nascimento"
+                                            placeholder="Data de Nascimento MM/DD/YYYY"
+                                            addon-left-icon="ni ni-calendar-grid-58">
                                 </base-input>
+                                <h7 slot="header" class="modal-title" style="display: block;"><b>Telefone</b></h7>
+                                <br>
+                                <base-input alternative
+                                            class="mb-3"
+                                            v-model="candidato.telefone.ddd"
+                                            placeholder="DDD" style="width: 20%; float: left">
+                                </base-input>
+                                <base-input alternative
+                                            class="mb-3"
+                                            v-model="candidato.telefone.numero"
+                                            placeholder="Número" style="width: 70%; float: right">
+                                </base-input>
+                                
+                                <h7 slot="header" class="modal-title" style="display: block;"><b>Endereço</b></h7>
+                                <br>
+                                <base-input alternative
+                                            v-model="candidato.endereco.logradouro"
+                                            class="mb-3"
+                                            placeholder="Logradouro" style="width: 70%; float: left">
+                                </base-input>
+                                <base-input alternative
+                                            class="mb-3"
+                                            v-model="candidato.endereco.numero"
+                                            placeholder="Número" style="width: 25%;float: right">
+                                </base-input>
+                                <base-input alternative
+                                            class="mb-3"
+                                            v-model="candidato.endereco.bairro"
+                                            placeholder="Bairro">
+                                </base-input>
+                                <base-input alternative
+                                            class="mb-3"
+                                            v-model="candidato.endereco.quadra"
+                                            placeholder="Quadra" style="width: 25%;float: left">
+                                </base-input>
+                                <base-input alternative
+                                            class="mb-3"
+                                            v-model="candidato.endereco.cidade"
+                                            placeholder="Cidade" style="width: 55%; float: left; margin-left: 5%">
+                                </base-input>
+                                <base-input alternative
+                                            class="mb-3"
+                                            v-model="candidato.endereco.uf"
+                                            placeholder="UF" style="width: 10%; float: right">
+                                </base-input>
+                                <h7 slot="header" class="modal-title" style="display: block;"><b>Projeto</b></h7>
+                                <br>
                             <div id="sel" v-for="projeto in projetos" :key="projeto.id_projeto">
-                                <base-radio :value="projeto.id_projeto" :name="projeto.id_projeto" v-model="projeto.id_projeto" class="mb-3">
+                                <base-radio :value="projeto.id_projeto" 
+                                            :name="projeto.id_projeto" 
+                                            v-model="candidato.id_projeto" 
+                                            class="ms-3"
+                                            style="float: left; margin: 2%"
+                                            >
                                  {{ projeto.titulo }}
                                 </base-radio>
                             </div>
@@ -57,19 +112,46 @@ export default {
   components: {
     Modal
   },
+  props: {
+    candidatoUpdate: {
+      type: Object
+    }
+  },
+
   data() {
     return {
+      telefoneTipos: ['Pessoal', 'Residencial', 'Comercial'],
       candidato: {
         nome: '',
-        endereco: {},
         cpf: '',
-        id_projeto: 0
+        id_projeto: 0, 
+        data_nascimento: '', 
+        endereco: {
+          logradouro: '',
+          numero: '',
+          quadra: '',
+          bairro: '',
+          cidade: '',
+          uf: '',
+        }, 
+        telefone: {
+          tipo: '',
+          ddd: '',
+          numero: '',
+        },
+        numero_inscricao: Math.floor(Math.random()*(9999-1001)+1000),
       },
       projetos: [],
       modals: {
         modal: false,
       }
     };
+  },
+
+  watch: {
+    updateCandidato () {
+      this.candidato = this.candidatoUpdate;
+    }
   },
 
   mounted () {
@@ -85,12 +167,15 @@ export default {
     },
 
     async newCandidato() {
+      console.log(this.candidato);
       await axios.post(`http://localhost:7777/pessoa/candidatos`, 
       { 
-        titulo: this.projeto.titulo, 
-        resumo: this.projeto.resumo, 
-        data_envio: this.projeto.data_envio, 
-        id_area: this.projeto.id_area 
+        nome: this.candidato.nome, 
+        cpf: this.candidato.cpf,
+        endereco: this.candidato.endereco,
+        telefone: this.candidato.telefone,
+        data_nascimento: this.candidato.data_nascimento, 
+        id_projeto: this.candidato.id_projeto 
       })
         .then();
         this.modals.modal = false;
