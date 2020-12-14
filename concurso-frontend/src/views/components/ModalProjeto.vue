@@ -1,5 +1,4 @@
 <template>
-    <!-- Modals -->
     <div class="row">
         <div class="col-md-4">
             <base-button type="primary" class="mt-4" @click="modals.modal = true" style="float: right;">
@@ -19,11 +18,11 @@
                                         v-model="projeto.titulo"
                                         addon-left-icon="ni ni-bold">
                             </base-input>
-                            <base-input alternative
+                            <textarea class="form-control form-control-alternative" rows="3" alternative
                                         placeholder="Resumo"
                                         v-model="projeto.resumo"
                                         addon-left-icon="ni ni-collection">
-                            </base-input>
+                            </textarea>
                             <div id="sel" v-for="area in areas" :key="area.id_area">
                                 <base-radio :value="area.id_area" :name="area.id_area" v-model="projeto.id_area" class="mb-3">
                                  {{ area.descricao }}
@@ -90,7 +89,7 @@ export default {
         id_area: this.projeto.id_area 
       })
         .then();
-        modals.modal = false
+        this.modals.modal = false;
     }
   }
 };

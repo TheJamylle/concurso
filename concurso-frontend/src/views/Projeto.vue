@@ -41,7 +41,14 @@
                                     <h5 class="title text-primary">{{ projeto.titulo }}</h5>
                                     <p>{{ projeto.resumo }}</p>
                                 </div>
+                                   
                             </div>
+                            <div v-for="autor in projeto.autores" :key="autor.numero_inscricao">
+                                <badge type="primary" rounded>{{ autor.nome }} - {{ autor.numero_inscricao }}</badge>
+                            </div>
+                            <base-button @click="delProjeto(projeto.id_projeto)" title="Excluir projeto" type="danger" style="float: right;">
+                                        X
+                            </base-button>
                         </card>
                     </div>
                 </div>
@@ -76,7 +83,13 @@ export default {
         .then(response => {
           this.projetos = response.data
         });
-    }
+    },
+
+    async delProjeto(id) {
+        console.log(id);
+      await axios.delete(`http://localhost:7777/projeto/${id}`).then();
+      this.getAllProjetos();
+    },
   }
 };
 </script>

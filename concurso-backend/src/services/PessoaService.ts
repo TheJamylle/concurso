@@ -120,7 +120,14 @@ class PessoaService {
     }
 
     public async getByIDCandidato(id_candidato: string): Promise<Candidato> {
-        const candidato = await Candidato.findOne({ where: { id_candidato } });
+        const candidato = await getConnection()
+                            .createQueryBuilder()
+                            .select('*')
+                            .from(Candidato, '')
+                            .addFrom(Pessoa, '')
+                            .where('id_candidato = :id_candidato', { id_candidato })
+                            .andWhere('id_pessoa_fk = id_pessoa')
+                            .getRawOne();
 
         if(!candidato) {
             throw new Error("ID do candidato não existe");
@@ -130,7 +137,15 @@ class PessoaService {
     }
 
     public async listCandidatos(): Promise<Array<Candidato>> {
-        const candidatos = await Candidato.find();
+        const candidatos = await getConnection()
+                    .createQueryBuilder()
+                    .select('candidato.*, pessoa.nome, projeto.titulo')
+                    .from(Candidato, '')
+                    .addFrom(Pessoa, '')
+                    .addFrom(Projeto, '')
+                    .andWhere('id_pessoa_fk = id_pessoa')
+                    .andWhere('id_projeto_fk = id_projeto')
+                    .getRawMany();
 
         return candidatos;
     }
@@ -138,7 +153,14 @@ class PessoaService {
     public async listCandidatosByProjeto(id_projeto: number): Promise<Array<Candidato>> {
         const projeto = await Projeto.findOneOrFail({ where: { id_projeto } });
 
-        const candidatos = await Candidato.find({ where: { projeto } });
+        const candidatos = await getConnection()
+        .createQueryBuilder()
+        .select('candidato.*, pessoa.nome')
+        .from(Candidato, '')
+        .addFrom(Pessoa, '')
+        .where('id_projeto_fk = :id', { id: projeto.id_projeto })
+        .andWhere('id_pessoa_fk = id_pessoa')
+        .getRawMany();
 
         return candidatos;
     }

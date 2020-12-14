@@ -3,6 +3,7 @@ import Router from "vue-router";
 import AppHeader from "./layout/AppHeader";
 import AppFooter from "./layout/AppFooter";
 import Components from "./views/Components.vue";
+import Candidato from "./views/Candidato.vue";
 import Contest from "./views/Contest.vue";
 import Area from "./views/Area.vue";
 import Login from "./views/Login.vue";
@@ -48,6 +49,15 @@ export default new Router({
       components: {
         header: AppHeader,
         default: Projeto,
+        footer: AppFooter
+      }
+    },
+    {
+      path: "/candidato",
+      name: "candidato",
+      components: {
+        header: AppHeader,
+        default: Candidato,
         footer: AppFooter
       }
     },
