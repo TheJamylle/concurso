@@ -53,6 +53,7 @@
                         <span class="nav-link-inner--text">Módulos</span>
                     </a>
                     <router-link to="/area" class="dropdown-item">Áreas</router-link>
+                    <router-link to="/avaliador" class="dropdown-item">Avaliadores</router-link>
                     <router-link to="/projeto" class="dropdown-item">Projetos</router-link>
                     <router-link to="/candidato" class="dropdown-item">Candidatos</router-link>
                     <router-link to="/login" class="dropdown-item">Login</router-link>
