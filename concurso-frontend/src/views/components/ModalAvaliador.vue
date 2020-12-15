@@ -100,7 +100,7 @@ import axios from 'axios';
 export default {
   el: "#sel",
   components: {
-    Modal
+    Modal,
   },
   props: {
     avaliadorUpdate: {
@@ -114,7 +114,6 @@ export default {
       avaliador: {
         nome: '',
         cpf: '',
-        id_projeto: 0, 
         data_nascimento: '', 
         endereco: {
           logradouro: '',
@@ -144,13 +143,13 @@ export default {
   },
 
   mounted () {
-    this.getProjetos();
+
   },
 
   methods: {
 
     async newAvaliador() {
-      console.log(this.avaliador);
+      console.log(this.avaliador)
       await axios.post(`http://localhost:7777/pessoa/avaliadores`, 
       { 
         nome: this.avaliador.nome, 

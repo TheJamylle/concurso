@@ -182,9 +182,6 @@ class PessoaService {
         avaliador.registro = registro;
         await avaliador.save();
 
-        pessoa.avaliador = avaliador;
-        await pessoa.save();
-
         if(telefone) {
             const tel = new Telefone();
             tel.ddd = telefone.ddd;

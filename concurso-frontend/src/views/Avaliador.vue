@@ -28,6 +28,12 @@
             <div class="col col-grid align-items-center" id="av">
                 <card shadow class="shadow-lg--hover mt-5" no-body v-for="avaliador in avaliadores" :key="avaliador.id_avaliador">
                     <div class="px-4">
+                      <button
+                        @click="delAvaliador(avaliador.registro)"
+                        title="Remover Avaliador"
+                        style="float: right; font-size: 25px;background: transparent; border: none; color: #000; width: 20px; margin: 15px">
+                          <i class="ni ni-fat-remove"></i>
+                      </button>
                         <div class="text-center mt-5">
                             <h3>{{ avaliador.nome }}</h3>
                             <div class="h6 font-weight-300"><i class="ni location_pin mr-2"></i>Registro: {{ avaliador.registro }}</div>
@@ -38,7 +44,7 @@
                 </card>
             </div>
           </div>
-            <modal-avaliador ></modal-avaliador>
+          <modal-avaliador></modal-avaliador>
         </section>
         
     </div>
@@ -46,24 +52,22 @@
 <script>
 import axios from 'axios';
 import ModalAvaliador from './components/ModalAvaliador.vue';
+import BaseButton from '../components/BaseButton.vue';
 
 export default {
-  components: { ModalAvaliador },
+  components: { ModalAvaliador, BaseButton },
   name: 'avaliador',
   el: '#av',
 
   data () {
     return {
-      avaliadores: []
+      avaliadores: [],
+      flagNew: false
     }
   },
 
   mounted () {
     this.getAllAvaliadores();
-  },
-
-  watch () {
-
   },
 
   methods: {
@@ -73,10 +77,19 @@ export default {
       });
     },
 
-    estilizaData (data) {
-      const dataRenderizada = 
-         new Date(data).getDate()+"/"+((new Date(data).getMonth()+1) > 9 ? (new Date(data).getMonth()+1) > 9 : ("0"+(new Date(data).getMonth()+1)))+"/"+new Date(data).getFullYear();
+    async delAvaliador(registro) {
+      await axios.delete(`http://localhost:7777/pessoa/avaliadores/${registro}`).then();
 
+      this.getAllAvaliadores();
+    },
+
+    estilizaData (data) {
+      const dataRenderizada = (
+             (new Date(data).getDate()+1) > 9 ? (new Date(data).getDate()+1) : ("0"+(new Date(data).getDate()+1))
+            )+"/"+
+            (
+             (new Date(data).getMonth()+1) > 9 ? (new Date(data).getMonth()+1) : ("0"+(new Date(data).getMonth()+1))
+            )+"/"+new Date(data).getFullYear();
       return dataRenderizada;
     }
   }
