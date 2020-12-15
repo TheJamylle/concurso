@@ -29,11 +29,61 @@
                 <card shadow class="shadow-lg--hover mt-5" no-body v-for="avaliador in avaliadores" :key="avaliador.id_avaliador">
                     <div class="px-4">
                       <button
-                        @click="delAvaliador(avaliador.registro)"
+                        @click="infoAvaliador(avaliador.registro)"
+                        title="Visualizar e Editar dados do Avaliador"
+                        style="float: right; font-size: 13px;background: transparent; border: none; color: #000; width: 10px; height: 20px; margin: 20px">
+                          <i class="ni ni-settings"></i>
+                      </button>
+                      <button
                         title="Remover Avaliador"
-                        style="float: right; font-size: 25px;background: transparent; border: none; color: #000; width: 20px; margin: 15px">
+                        style="font-size: 25px;background: transparent; border: none; color: #000; float: right;height: 5px; margin-top: 130px; margin-right: -50px"
+                        @click="delAvaliador(avaliador.registro)">
                           <i class="ni ni-fat-remove"></i>
                       </button>
+                      <modal :show.sync="modal"
+                            gradient="secondary"
+                            modal-classes="modal-secondary modal-dialog-centered">
+                            <h5 slot="header" style="color: #0EBAB1" class="modal-title" id="modal-title-notification">Informações do Avaliador</h5>
+
+                            <template>
+                                    <form role="form" >
+                                        <h6 style="color: #0EBAB1"> <b>Nome</b> </h6>
+                                        <base-input alternative
+                                            class="mb-3"
+                                            v-model="avaliadorEscolhido.nome"
+                                            >
+                                        </base-input>
+                                        <h6 style="color: #0EBAB1"> <b>CPF</b> </h6>
+                                        <base-input alternative
+                                            class="mb-3"
+                                            v-model="avaliadorEscolhido.cpf"
+                                            >
+                                        </base-input>
+                                        <h6 style="color: #0EBAB1"> <b>Data de Nascimento</b> </h6>
+                                        <base-input alternative
+                                            class="mb-3"
+                                            v-model="avaliadorEscolhido.data_nascimento"
+                                            >
+                                        </base-input>
+                                        <!-- <h6 style="color: #0EBAB1"> <b>Telefone</b> </h6>
+                                        <base-input alternative
+                                            class="mb-3"
+                                            v-model="avaliadorEscolhido.telefone.ddd"
+                                            style="width: 20%; float: left">
+                                        </base-input>
+                                        <base-input alternative
+                                                    class="mb-3"
+                                                    v-model="avaliadorEscolhido.telefone.numero"
+                                            style="width: 70%; float: right">
+                                        </base-input> -->
+                                    </form>
+                                </template>
+
+                            <template slot="footer">
+                                <base-button type="white" class="ml-auto"
+                                            @click="modal = false">OK</base-button>
+                            </template>
+                        </modal>
                         <div class="text-center mt-5">
                             <h3>{{ avaliador.nome }}</h3>
                             <div class="h6 font-weight-300"><i class="ni location_pin mr-2"></i>Registro: {{ avaliador.registro }}</div>
@@ -62,7 +112,9 @@ export default {
   data () {
     return {
       avaliadores: [],
-      flagNew: false
+      flagNew: false,
+      modal: false,
+      avaliadorEscolhido: {}
     }
   },
 
@@ -75,6 +127,17 @@ export default {
       await axios.get(`http://localhost:7777/pessoa/avaliadores`).then(response => {
         this.avaliadores = response.data;
       });
+    },
+
+    async infoCandidato(insc) {
+      for(let i = 0; i < this.avaliadores.length; i++) {
+        if(this.avaliadores[i].registro == insc) {
+          this.avaliadorEscolhido = this.avaliadores[i];
+          break;
+        }
+      }
+      this.avaliadorEscolhido.data_nascimento = this.estilizaData(this.avaliadorEscolhido.data_nascimento);
+      this.modal = true;
     },
 
     async delAvaliador(registro) {
