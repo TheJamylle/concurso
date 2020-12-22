@@ -112,7 +112,7 @@
 
                             <template slot="footer">
                                 <base-button type="white" class="ml-auto"
-                                            @click="update(avaliador.registro)">OK</base-button>
+                                            @click="update(avaliadorEscolhido.registro)">OK</base-button>
                             </template>
                         </modal>
                         <div class="text-center mt-5">
