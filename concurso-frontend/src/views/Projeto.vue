@@ -38,7 +38,8 @@
                                           rounded></icon>
                                 </div>
                                 <div class="pl-4">
-                                    <h5 class="title text-primary">{{ projeto.titulo }}</h5>
+                                    <h5 class="title text-primary">{{ projeto.titulo }} &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                                        <p style="font-size: 12px;"> Enviado em <b>{{ estilizaData(projeto.data_envio) }}</b></p></h5>
                                     <p>{{ projeto.resumo }}</p>
                                 </div>
                                    
@@ -49,6 +50,51 @@
                             <base-button @click="delProjeto(projeto.id_projeto)" title="Excluir projeto" type="danger" style="float: right;">
                                         X
                             </base-button>
+
+                            <base-button
+                                type="primary"
+                                @click="infoProjeto(projeto.id_projeto)"
+                                title="Visualizar e Editar dados do Projeto"
+                                style="float: right; ">
+                                <i class="ni ni-settings"></i>
+                            </base-button>
+
+
+                            <modal :show.sync="modal"
+                                    gradient="primary"
+                                    modal-classes="modal-primary modal-dialog-centered">
+                            <template>
+                                    <form role="form" >
+                                        <base-input alternative
+                                                    class="mb-3"
+                                                    placeholder="Título"
+                                                    v-model="projetoEscolhido.titulo"
+                                                    addon-left-icon="ni ni-bold">
+                                        </base-input>
+                                        <textarea class="form-control form-control-alternative" rows="3" alternative
+                                                    placeholder="Resumo"
+                                                    v-model="projetoEscolhido.resumo"
+                                                    addon-left-icon="ni ni-collection">
+                                        </textarea>
+                                        <hr>
+                                        <div id="sel" v-for="area in areas" :key="area.id_area">
+                                            <base-radio :value="area.id_area" :name="area.id_area" v-model="projetoEscolhido.id_area_fk" class="mb-3">
+                                            {{ area.descricao }}
+                                            </base-radio>
+                                        </div>
+                                    </form>
+                                </template>
+
+                            <template slot="footer">
+                                <base-button type="link"
+                                            text-color="white"
+                                            class="ml-auto"
+                                            @click="modal = false">
+                                    Cancelar
+                                </base-button>
+                                <base-button type="white" @click="update(projetoEscolhido.id_projeto)">Salvar</base-button>
+                            </template>
+                        </modal>
                         </card>
                     </div>
                 </div>
@@ -59,10 +105,11 @@
 </template>
 <script>
 import axios from 'axios';
+import Modal from '@/components/Modal.vue';
 import ModalProjeto from './components/ModalProjeto.vue';
 
 export default {
-  components: { ModalProjeto },
+  components: { ModalProjeto, Modal },
   name: "projeto",
   el: '#pros',
 
@@ -70,11 +117,15 @@ export default {
     return {
        submitted: false,
        projetos: [],
+       modal: false,
+       areas: [],
+       projetoEscolhido: {}
     }
   },
 
   mounted () {
     this.getAllProjetos();
+    this.getAreas();
   },
 
   methods: {
@@ -85,8 +136,42 @@ export default {
         });
     },
 
+    async getAreas() {
+      await axios.get(`http://localhost:7777/area`)
+        .then(response => {
+          this.areas = response.data
+      });
+    },
+
+    async infoProjeto(id) {
+      await axios.get(`http://localhost:7777/projeto/${id}`).then(response => {
+        this.projetoEscolhido = response.data
+      });
+      this.modal = true;
+    },
+
+    async update(id) {
+      await axios.put(`http://localhost:7777/projeto/${id}`, {
+        titulo: this.projetoEscolhido.titulo, 
+        resumo: this.projetoEscolhido.resumo, 
+        data_envio: new Date(), 
+        id_area: this.projetoEscolhido.id_area_fk
+      }).then();
+      this.getAllProjetos();
+      this.modal = false;
+    },
+
+    estilizaData (data) {
+      const dataRenderizada = (
+             (new Date(data).getDate()+1) > 9 ? (new Date(data).getDate()+1) : ("0"+(new Date(data).getDate()+1))
+            )+"/"+
+            (
+             (new Date(data).getMonth()+1) > 9 ? (new Date(data).getMonth()+1) : ("0"+(new Date(data).getMonth()+1))
+            )+"/"+new Date(data).getFullYear();
+      return dataRenderizada;
+    },
+
     async delProjeto(id) {
-        console.log(id);
       await axios.delete(`http://localhost:7777/projeto/${id}`).then();
       this.getAllProjetos();
     },

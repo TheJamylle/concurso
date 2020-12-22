@@ -235,7 +235,7 @@ class PessoaService {
     public async getByIDAvaliador(id_avaliador: string): Promise<Avaliador> {
         const avaliador = await getConnection()
         .createQueryBuilder()
-        .select('avaliador.*, pessoa.nome')
+        .select('avaliador.*, pessoa.nome, pessoa.data_nascimento, pessoa.cpf, pessoa.endereco')
         .from(Avaliador, '')
         .addFrom(Pessoa, '')
         .where('id_avaliador = :id', { id: id_avaliador })

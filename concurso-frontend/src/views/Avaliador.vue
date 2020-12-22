@@ -29,7 +29,7 @@
                 <card shadow class="shadow-lg--hover mt-5" no-body v-for="avaliador in avaliadores" :key="avaliador.id_avaliador">
                     <div class="px-4">
                       <button
-                        @click="infoAvaliador(avaliador.registro)"
+                        @click="infoAvaliador(avaliador.id_avaliador)"
                         title="Visualizar e Editar dados do Avaliador"
                         style="float: right; font-size: 13px;background: transparent; border: none; color: #000; width: 10px; height: 20px; margin: 20px">
                           <i class="ni ni-settings"></i>
@@ -163,17 +163,13 @@ export default {
       });
     },
 
-    infoAvaliador(insc) {
-      for(let i = 0; i < this.avaliadores.length; i++) {
-        if(this.avaliadores[i].registro == insc) {
-          this.avaliadorEscolhido = this.avaliadores[i];
-          break;
-        }
-      }
+    async infoAvaliador(insc) {
+      await axios.get(`http://localhost:7777/pessoa/avaliadores/${insc}`).then(response => {
+        this.avaliadorEscolhido = response.data
+      });
       this.avaliadorEscolhido.endereco = JSON.parse(this.avaliadorEscolhido.endereco);
       this.avaliadorEscolhido.data_nascimento = this.estilizaData(this.avaliadorEscolhido.data_nascimento);
       this.modal = true;
-      console.log(this.avaliadorEscolhido.endereco);
     },
 
     async delAvaliador(registro) {

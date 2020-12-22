@@ -46,7 +46,12 @@ class ProjetoService {
     }
 
     public async getByID(id_projeto: string): Promise<Projeto> {
-        const projeto = await Projeto.findOne({ where: { id_projeto } });
+        const projeto = await getConnection()
+            .createQueryBuilder()
+            .select('*')
+            .from(Projeto, '')
+            .where('id_projeto = :id', { id: id_projeto })
+            .getRawOne();
 
         if(!projeto) {
             throw new Error("ID do projeto não existe");
@@ -56,7 +61,7 @@ class ProjetoService {
     }
 
     public async list(): Promise<Array<Projeto>> {
-        const projetos = await Projeto.find();
+        const projetos = await getConnection().createQueryBuilder().select('*').from(Projeto, '').getRawMany();
 
         for(let i = 0; i < projetos.length; i++) {
             projetos[i].autores = await new PessoaService()
@@ -67,7 +72,7 @@ class ProjetoService {
     }
 
     public async listNaoAvaliados(): Promise<Array<Projeto>> {
-        const subQuery = await Projeto.createQueryBuilder('projeto');
+        const subQuery = Projeto.createQueryBuilder('projeto');
 
         const projetosNaoAvaliados = await subQuery
         .where(

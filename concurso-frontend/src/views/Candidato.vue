@@ -39,7 +39,7 @@
                     <td>{{ cand.nome }}</td>
                     <td>{{ cand.titulo }}</td>
                     <td>
-                        <base-button type="info" title="Visualizar Dados do Candidato" @click="infoCandidato(cand.numero_inscricao)">
+                        <base-button type="info" title="Visualizar Dados do Candidato" @click="infoCandidato(cand.id_candidato)">
                             <i class="ni ni-circle-08"></i>
                         </base-button>
                         
@@ -203,12 +203,9 @@ export default {
     },
 
     async infoCandidato(insc) {
-      for(let i = 0; i < this.candidatos.length; i++) {
-        if(this.candidatos[i].numero_inscricao == insc) {
-          this.candidatoEscolhido = this.candidatos[i];
-          break;
-        }
-      }
+      await axios.get(`http://localhost:7777/pessoa/candidatos/${insc}`).then(response => {
+        this.candidatoEscolhido = response.data
+      });
       this.candidatoEscolhido.endereco = JSON.parse(this.candidatoEscolhido.endereco);
       this.candidatoEscolhido.data_nascimento = this.estilizaData(this.candidatoEscolhido.data_nascimento);
       this.modals.modal = true;
