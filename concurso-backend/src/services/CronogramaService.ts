@@ -63,7 +63,7 @@ class CronogramaService {
         return cronogramas;
     }
 
-    public async listByPremio(id_premio: string): Promise<Array<Cronograma>> {
+    public async listByPremio(id_premio: number): Promise<Array<Cronograma>> {
         const premio = await Premio.findOneOrFail({ where: { id_premio } });
 
         const cronogramas = await Cronograma.find({ where: { premio } });

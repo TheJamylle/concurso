@@ -1,5 +1,6 @@
 import Area from '../models/Area';
 import Premio from '../models/Premio';
+import CronogramaService from './CronogramaService';
 
 interface BasePremio {
     nome: string;
@@ -50,6 +51,10 @@ class PremioService {
 
     public async list(): Promise<Array<Premio>> {
         const premios = await Premio.find();
+
+        for(let i = 0; i < premios.length; i+=1) {
+          premios[i].cronograma = await new CronogramaService().listByPremio(premios[i].id_premio);
+        }
 
         return premios;
     }

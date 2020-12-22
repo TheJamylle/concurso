@@ -48,16 +48,17 @@
                                     <th scope="col">Item</th>
                                     <th scope="col">Data Inicial</th>
                                     <th scope="col">Data Final</th>
+                                    <th scope="col">Ações</th>
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    <tr v-for="cro in premio.cronogramas" :key="cro.id_cronograma">
-                                    <th scope="row">{{ cro.id_cronograma }}</th>
+                                    <tr v-for="(cro, i) in premio.cronograma" :key="cro.id_cronograma">
+                                    <th scope="row">{{ i+1 }}</th>
                                     <td>{{ cro.item }}</td>
-                                    <td>{{ cro.data_inicio }}</td>
-                                    <td>{{ cro.data_fim }}</td>
+                                    <td>{{ estilizaData(cro.data_inicio) }}</td>
+                                    <td>{{ estilizaData(cro.data_fim) }}</td>
                                     <td>
-                                        <base-button type="info" title="Visualizar Dados do Cronograma" @click="infoCronograma(cro.id_cronograma)">
+                                        <base-button type="primary" title="Visualizar Dados do Cronograma" @click="infoCronograma(cro.id_cronograma)">
                                             <i class="ni ni-circle-08"></i>
                                         </base-button>
                                         
@@ -68,10 +69,23 @@
                                     </tr>
                                 </tbody>
                                 </table>
+                                <base-button @click="modals.item = true"
+                                    type="secondary"
+                                    title="Registrar Novo Item"
+                                    style="float: right;">
+                                    <i class="ni ni-fat-add"></i>
+                                </base-button>
                         </tab-pane>
                     </card>   
                     </tabs>
                 </div>
+                <br>
+                <base-button @click="modals.prize = true"
+                    type="default"
+                    title="Registrar Novo Prêmio"
+                    style="float: right;">
+                    <i class="ni ni-fat-add"></i>
+                </base-button>
             </div>
         </section>
     </div>
@@ -88,7 +102,11 @@ export default {
 
   data () {
       return {
-        premios: []
+        premios: [],
+        modals: {
+          prize: false,
+          item: false
+        }
       }
   },
 
@@ -102,6 +120,18 @@ export default {
         .then(response => {
           this.premios = response.data
       });
+    },
+
+    estilizaData (data) {
+      const dataRenderizada = 
+            (
+             (new Date(data).getDate()+1) > 9 ? (new Date(data).getDate()+1) : ("0"+(new Date(data).getDate()+1))
+            )+"/"+
+            (
+             (new Date(data).getMonth()+1) > 9 ? (new Date(data).getMonth()+1) : ("0"+(new Date(data).getMonth()+1))
+            )+"/"+new Date(data).getFullYear();
+
+      return dataRenderizada;
     },
   }
 };
