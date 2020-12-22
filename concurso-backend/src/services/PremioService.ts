@@ -1,4 +1,6 @@
+import { getConnection } from 'typeorm';
 import Area from '../models/Area';
+import Cronograma from '../models/Cronograma';
 import Premio from '../models/Premio';
 import CronogramaService from './CronogramaService';
 
@@ -62,7 +64,14 @@ class PremioService {
     public async delete(id_premio: string): Promise<void> {
         const premio = await Premio.findOneOrFail({ where: { id_premio } });
 
-        premio.remove();
+        await getConnection()
+            .createQueryBuilder()
+            .delete()
+            .from(Cronograma, '')
+            .where('id_premio_fk = :id', { id: id_premio })
+            .execute();
+
+        await premio.remove();
     }
 
     public async listByArea(id_area: string): Promise<Array<Premio>> {
