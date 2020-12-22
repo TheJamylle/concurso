@@ -136,7 +136,7 @@ class PessoaService {
     public async listCandidatos(): Promise<Array<Candidato>> {
         const candidatos = await getConnection()
                     .createQueryBuilder()
-                    .select('candidato.*, pessoa.nome, projeto.titulo, pessoa.data_nascimento, pessoa.cpf')
+                    .select('candidato.*, pessoa.nome, projeto.titulo, pessoa.data_nascimento, pessoa.cpf, pessoa.endereco')
                     .from(Candidato, '')
                     .addFrom(Pessoa, '')
                     .addFrom(Projeto, '')
@@ -252,7 +252,7 @@ class PessoaService {
     public async listAvaliadores(): Promise<Array<Avaliador>> {
         const avaliadores = await getConnection()
         .createQueryBuilder()
-        .select('avaliador.*, pessoa.nome, pessoa.data_nascimento')
+        .select('avaliador.*, pessoa.nome, pessoa.data_nascimento, pessoa.cpf, pessoa.endereco')
         .from(Avaliador, '')
         .addFrom(Pessoa, '')
         .where('id_pessoa_fk = id_pessoa')

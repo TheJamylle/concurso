@@ -167,7 +167,6 @@ export default {
     },
 
     async newCandidato() {
-      console.log(this.candidato);
       await axios.post(`http://localhost:7777/pessoa/candidatos`, 
       { 
         nome: this.candidato.nome, 

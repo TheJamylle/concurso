@@ -72,6 +72,37 @@
                                             v-model="candidatoEscolhido.data_nascimento"
                                             >
                                         </base-input>
+                                        <h6 style="color: #0EBAB1"><b>Endereço</b></h6>
+                                        <base-input alternative
+                                                    v-model="candidatoEscolhido.endereco.logradouro"
+                                                    class="mb-3"
+                                                    style="width: 70%; float: left">
+                                        </base-input>
+                                        <base-input alternative
+                                                    class="mb-3"
+                                                    v-model="candidatoEscolhido.endereco.numero"
+                                                    style="width: 25%;float: right">
+                                        </base-input>
+                                        <base-input alternative
+                                                    class="mb-3"
+                                                    v-model="candidatoEscolhido.endereco.bairro"
+                                                    >
+                                        </base-input>
+                                        <base-input alternative
+                                                    class="mb-3"
+                                                    v-model="candidatoEscolhido.endereco.quadra"
+                                                    style="width: 25%;float: left">
+                                        </base-input>
+                                        <base-input alternative
+                                                    class="mb-3"
+                                                    v-model="candidatoEscolhido.endereco.cidade"
+                                                    style="width: 55%; float: left; margin-left: 5%">
+                                        </base-input>
+                                        <base-input alternative
+                                                    class="mb-3"
+                                                    v-model="candidatoEscolhido.endereco.uf"
+                                                    style="width: 10%; float: right">
+                                        </base-input>
                                         <!-- <h6 style="color: #0EBAB1"> <b>Telefone</b> </h6>
                                         <base-input alternative
                                             class="mb-3"
@@ -84,11 +115,23 @@
                                             style="width: 70%; float: right">
                                         </base-input> -->
                                     </form>
+                                    <h6 style="color: #0EBAB1"><b>Projeto</b></h6>
+                                <br>
+                                <div id="sel" v-for="projeto in projetos" :key="projeto.id_projeto">
+                                <base-radio :value="projeto.id_projeto"
+                                            :name="projeto.id_projeto"
+                                            v-model="candidatoEscolhido.id_projeto_fk" 
+                                            class="ms-3"
+                                            style="float: left; margin: 2%;"
+                                            >
+                                 {{ projeto.titulo }}
+                                </base-radio>
+                                </div>
                                 </template>
 
                             <template slot="footer">
                                 <base-button type="white" class="ml-auto"
-                                            @click="modals.modal = false">OK</base-button>
+                                            @click="update(candidatoEscolhido.numero_inscricao)">OK</base-button>
                             </template>
                         </modal>
                         
@@ -110,6 +153,7 @@ import ModalCandidato from './components/ModalCandidato.vue';
 export default {
   components: { ModalCandidato, Modal },
   name: "candidato",
+  el: "#sel",
 
   data () {
     return {
@@ -119,21 +163,43 @@ export default {
         modal: false,
        },
        candidatoEscolhido: {
-
-       }
+        endereco: {}
+       },
+       projetos: []
     }
   },
 
   mounted () {
     this.getAllCandidatos();
+    this.getProjetos();
   },
 
   methods: {
+    async getProjetos() {
+      await axios.get(`http://localhost:7777/projeto`)
+        .then(response => {
+          this.projetos = response.data
+      });
+    },
+
     getAllCandidatos() {
       axios.get(`http://localhost:7777/pessoa/candidatos`)
         .then(response => {
           this.candidatos = response.data
         });
+    },
+
+    async update(insc) {
+      await axios.put(`http://localhost:7777/pessoa/candidatos/${insc}`, {
+        nome: this.candidatoEscolhido.nome, 
+        cpf: this.candidatoEscolhido.cpf,
+        data_nascimento: this.candidatoEscolhido.data_nascimento, 
+        endereco: this.candidatoEscolhido.endereco, 
+        id_projeto: this.candidatoEscolhido.id_projeto_fk 
+      });
+
+      this.getAllCandidatos();
+      this.modals.modal = false;
     },
 
     async infoCandidato(insc) {
@@ -143,6 +209,7 @@ export default {
           break;
         }
       }
+      this.candidatoEscolhido.endereco = JSON.parse(this.candidatoEscolhido.endereco);
       this.candidatoEscolhido.data_nascimento = this.estilizaData(this.candidatoEscolhido.data_nascimento);
       this.modals.modal = true;
     },

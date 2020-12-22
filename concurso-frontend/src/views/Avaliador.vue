@@ -43,29 +43,60 @@
                       <modal :show.sync="modal"
                             gradient="secondary"
                             modal-classes="modal-secondary modal-dialog-centered">
-                            <h5 slot="header" style="color: #0EBAB1" class="modal-title" id="modal-title-notification">Informações do Avaliador</h5>
+                            <h5 slot="header" style="color: #724EBD" class="modal-title" id="modal-title-notification">Informações do Avaliador</h5>
 
                             <template>
                                     <form role="form" >
-                                        <h6 style="color: #0EBAB1"> <b>Nome</b> </h6>
+                                        <h6 style="color: #724EBD"> <b>Nome</b> </h6>
                                         <base-input alternative
                                             class="mb-3"
                                             v-model="avaliadorEscolhido.nome"
                                             >
                                         </base-input>
-                                        <h6 style="color: #0EBAB1"> <b>CPF</b> </h6>
+                                        <h6 style="color: #724EBD"> <b>CPF</b> </h6>
                                         <base-input alternative
                                             class="mb-3"
                                             v-model="avaliadorEscolhido.cpf"
                                             >
                                         </base-input>
-                                        <h6 style="color: #0EBAB1"> <b>Data de Nascimento</b> </h6>
+                                        <h6 style="color: #724EBD"> <b>Data de Nascimento</b> </h6>
                                         <base-input alternative
                                             class="mb-3"
                                             v-model="avaliadorEscolhido.data_nascimento"
                                             >
                                         </base-input>
-                                        <!-- <h6 style="color: #0EBAB1"> <b>Telefone</b> </h6>
+                                        <h6 style="color: #724EBD"><b>Endereço</b></h6>
+                                        <base-input alternative
+                                                    v-model="avaliadorEscolhido.endereco.logradouro"
+                                                    class="mb-3"
+                                                    style="width: 70%; float: left">
+                                        </base-input>
+                                        <base-input alternative
+                                                    class="mb-3"
+                                                    v-model="avaliadorEscolhido.endereco.numero"
+                                                    style="width: 25%;float: right">
+                                        </base-input>
+                                        <base-input alternative
+                                                    class="mb-3"
+                                                    v-model="avaliadorEscolhido.endereco.bairro"
+                                                    >
+                                        </base-input>
+                                        <base-input alternative
+                                                    class="mb-3"
+                                                    v-model="avaliadorEscolhido.endereco.quadra"
+                                                    style="width: 25%;float: left">
+                                        </base-input>
+                                        <base-input alternative
+                                                    class="mb-3"
+                                                    v-model="avaliadorEscolhido.endereco.cidade"
+                                                    style="width: 55%; float: left; margin-left: 5%">
+                                        </base-input>
+                                        <base-input alternative
+                                                    class="mb-3"
+                                                    v-model="avaliadorEscolhido.endereco.uf"
+                                                    style="width: 10%; float: right">
+                                        </base-input>
+                                        <!-- <h6 style="color: #724EBD"> <b>Telefone</b> </h6>
                                         <base-input alternative
                                             class="mb-3"
                                             v-model="avaliadorEscolhido.telefone.ddd"
@@ -81,7 +112,7 @@
 
                             <template slot="footer">
                                 <base-button type="white" class="ml-auto"
-                                            @click="modal = false">OK</base-button>
+                                            @click="update(avaliador.registro)">OK</base-button>
                             </template>
                         </modal>
                         <div class="text-center mt-5">
@@ -103,9 +134,10 @@
 import axios from 'axios';
 import ModalAvaliador from './components/ModalAvaliador.vue';
 import BaseButton from '../components/BaseButton.vue';
+import Modal from "@/components/Modal.vue";
 
 export default {
-  components: { ModalAvaliador, BaseButton },
+  components: { ModalAvaliador, BaseButton, Modal },
   name: 'avaliador',
   el: '#av',
 
@@ -114,7 +146,9 @@ export default {
       avaliadores: [],
       flagNew: false,
       modal: false,
-      avaliadorEscolhido: {}
+      avaliadorEscolhido: {
+        endereco: {}
+      }
     }
   },
 
@@ -129,19 +163,33 @@ export default {
       });
     },
 
-    async infoCandidato(insc) {
+    infoAvaliador(insc) {
       for(let i = 0; i < this.avaliadores.length; i++) {
         if(this.avaliadores[i].registro == insc) {
           this.avaliadorEscolhido = this.avaliadores[i];
           break;
         }
       }
+      this.avaliadorEscolhido.endereco = JSON.parse(this.avaliadorEscolhido.endereco);
       this.avaliadorEscolhido.data_nascimento = this.estilizaData(this.avaliadorEscolhido.data_nascimento);
       this.modal = true;
+      console.log(this.avaliadorEscolhido.endereco);
     },
 
     async delAvaliador(registro) {
       await axios.delete(`http://localhost:7777/pessoa/avaliadores/${registro}`).then();
+
+      this.getAllAvaliadores();
+    },
+
+    async update(insc) {
+      await axios.put(`http://localhost:7777/pessoa/avaliadores/${insc}`, {
+        nome: this.avaliadorEscolhido.nome, 
+        cpf: this.avaliadorEscolhido.cpf,
+        data_nascimento: this.avaliadorEscolhido.data_nascimento, 
+        endereco: this.avaliadorEscolhido.endereco
+      });
+      this.modal = false;
 
       this.getAllAvaliadores();
     },

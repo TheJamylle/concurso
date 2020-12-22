@@ -86,7 +86,7 @@ pessoaRouter.get('/avaliadores', async (request, response) => {
   }
 });
 
-pessoaRouter.patch('/candidatos/:id', async (request, response) => {
+pessoaRouter.put('/candidatos/:id', async (request, response) => {
   try {
     const numero_inscricao = request.params.id;
 
@@ -106,7 +106,7 @@ pessoaRouter.patch('/candidatos/:id', async (request, response) => {
   }
 });
 
-pessoaRouter.patch('/avaliadores/:id', async (request, response) => {
+pessoaRouter.put('/avaliadores/:id', async (request, response) => {
   try {
     const registro = request.params.id;
 
