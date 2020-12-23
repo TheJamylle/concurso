@@ -101,15 +101,29 @@
             </div>
             <br>
             <modal-projeto></modal-projeto>
+            <tabs :fill="false" circle style="position: fixed; margin-left: 80%;margin-top: -600px">
+                <tab-pane>
+                    <a slot="title" class="nav-link-icon d-block" title="Projetos Avaliados" @click="rated = true"><i class="ni ni-paper-diploma" ></i></a>
+                </tab-pane>
+                <tab-pane>
+                    <a slot="title" class="nav-link-icon d-block" title="Projetos Não Avaliados" @click="notRated = true"><i class="ni ni-map-big"></i></a>
+                </tab-pane>
+                <tab-pane>
+                    <a slot="title" class="nav-link-icon d-block" title="Projetos Vencedores" @click="winner = true"><i
+                           class="ni ni-trophy"></i></a>
+                    </tab-pane>
+                </tabs>
     </section>
 </template>
 <script>
 import axios from 'axios';
 import Modal from '@/components/Modal.vue';
 import ModalProjeto from './components/ModalProjeto.vue';
+import Tabs from "@/components/Tabs/Tabs.vue";
+import TabPane from "@/components/Tabs/TabPane.vue";
 
 export default {
-  components: { ModalProjeto, Modal },
+  components: { ModalProjeto, Modal, Tabs, TabPane },
   name: "projeto",
   el: '#pros',
 
@@ -118,8 +132,14 @@ export default {
        submitted: false,
        projetos: [],
        modal: false,
+       rated: false,
+       winner: false,
+       notRated: false,
        areas: [],
-       projetoEscolhido: {}
+       projetoEscolhido: {},
+       projetosWinners: [],
+       projetosRated: [],
+       projetosNotRated: []
     }
   },
 
