@@ -42,17 +42,32 @@ class PremioService {
     }
 
     public async getByID(id_premio: string): Promise<Premio> {
-        const premio = await Premio.findOne({ where: { id_premio } });
+        const premio = await getConnection()
+                        .createQueryBuilder()
+                        .select('premio.*, area.descricao as area')
+                        .from(Premio, '')
+                        .addFrom(Area, '')
+                        .where('id_premio = :id', { id: id_premio })
+                        .andWhere('id_area_fk = id_area')
+                        .getRawOne();
 
         if(!premio) {
             throw new Error("ID do prêmio não existe");
         }
 
+        premio.cronograma = await new CronogramaService().listByPremio(premio.id_premio);
+
         return premio;
     }
 
     public async list(): Promise<Array<Premio>> {
-        const premios = await Premio.find();
+        const premios = await getConnection()
+                            .createQueryBuilder()
+                            .select('premio.*, area.descricao as area')
+                            .from(Premio, '')
+                            .addFrom(Area, '')
+                            .andWhere('id_area_fk = id_area')
+                            .getRawMany();
 
         for(let i = 0; i < premios.length; i+=1) {
           premios[i].cronograma = await new CronogramaService().listByPremio(premios[i].id_premio);

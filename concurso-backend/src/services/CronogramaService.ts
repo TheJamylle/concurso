@@ -1,3 +1,4 @@
+import { getConnection } from 'typeorm';
 import Cronograma from '../models/Cronograma';
 import Premio from '../models/Premio';
 
@@ -48,7 +49,12 @@ class CronogramaService {
     }
 
     public async getByID(id_cronograma: string): Promise<Cronograma> {
-        const cronograma = await Cronograma.findOne({ where: { id_cronograma } });
+        const cronograma = await getConnection()
+                            .createQueryBuilder()
+                            .select('*')
+                            .from(Cronograma, '')
+                            .where('id_cronograma = :id', { id: id_cronograma })
+                            .getRawOne();
 
         if(!cronograma) {
             throw new Error("Cronograma não encontrado");

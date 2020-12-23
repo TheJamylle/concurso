@@ -29,12 +29,17 @@
                             </template>
 
                             <p class="description">{{ premio.descricao }}</p><br><br>
-                            <p class="description">Ano: {{ premio.ano }}</p>
+                            <badge type="primary" >{{ premio.ano }}</badge>
+                            <badge type="primary" >{{ premio.area }}</badge>
+                            <div style="float: right">
+                            <base-button type="primary" title="Visualizar Dados do Prêmio" @click="infoPremio(premio.id_premio)">
+                              <i class="ni ni-trophy"></i>
+                            </base-button>
                             <base-button @click="delPremio(premio.id_premio)" 
-                                            title="Excluir cronograma" type="danger" 
-                                            style="float: right">
+                                            title="Excluir cronograma" type="danger">
                                 <i class="ni ni-fat-remove"></i>
                             </base-button>
+                            </div>
                         </tab-pane>
 
                         <tab-pane key="tab2">
@@ -60,7 +65,7 @@
                                     <td>{{ estilizaData(cro.data_fim) }}</td>
                                     <td>
                                         <base-button type="primary" title="Visualizar Dados do Cronograma" @click="infoCronograma(cro.id_cronograma)">
-                                            <i class="ni ni-circle-08"></i>
+                                            <i class="ni ni-time-alarm"></i>
                                         </base-button>
                                         
                                         <base-button @click="delCronograma(cro.id_cronograma)" title="Excluir cronograma" type="danger" >
@@ -133,7 +138,55 @@
                     </base-button>
                     <base-button type="white"
                                  @click="addCronograma()">
-                        Ok, Got it
+                        Inserir
+                    </base-button>
+                </template>
+            </modal>
+
+            <modal :show.sync="modals.upItem"
+                   gradient="danger"
+                   modal-classes="modal-danger modal-dialog-centered">
+                <h6 slot="header" class="modal-title" id="modal-title-notification">Atualizar Item de Cronograma</h6>
+
+                <div class="py-3 text-center">
+                    <h6 class="heading mt-4">Item</h6>
+                    <base-input alternative
+                            class="mb-3"
+                            v-model="cronogramaEscolhido.item"
+                            addon-left-icon="ni ni-bold">
+                    </base-input>
+                    <h6 class="heading mt-4">Data Inicial</h6>
+                    <base-input addon-left-icon="ni ni-calendar-grid-58">
+                        <flat-picker slot-scope="{focus, blur}"
+                                    @on-open="focus"
+                                    @on-close="blur"
+                                    :config="{allowInput: true}"
+                                    class="form-control datepicker"
+                                    v-model="cronogramaEscolhido.data_inicio">
+                        </flat-picker>
+                    </base-input>
+                    <h6 class="heading mt-4">Data Final</h6>
+                    <base-input addon-left-icon="ni ni-calendar-grid-58">
+                        <flat-picker slot-scope="{focus, blur}"
+                                    @on-open="focus"
+                                    @on-close="blur"
+                                    :config="{allowInput: true}"
+                                    class="form-control datepicker"
+                                    v-model="cronogramaEscolhido.data_fim">
+                        </flat-picker>
+                    </base-input>
+                </div>
+
+                <template slot="footer">
+                    <base-button type="link"
+                                 text-color="white"
+                                 class="ml-auto"
+                                 @click="modals.upItem = false">
+                        Close
+                    </base-button>
+                    <base-button type="white"
+                                 @click="updateCronograma(cronogramaEscolhido.id_cronograma)">
+                        Atualizar
                     </base-button>
                 </template>
             </modal>
@@ -176,12 +229,60 @@
                     <base-button type="link"
                                  text-color="white"
                                  class="ml-auto"
-                                 @click="modals.item = false">
+                                 @click="modals.prize = false">
                         Close
                     </base-button>
                     <base-button type="white"
                                  @click="addPremio()">
-                        Ok, Got it
+                        Salvar
+                    </base-button>
+                </template>
+            </modal>
+
+            <modal :show.sync="modals.upPrize"
+                   gradient="primary"
+                   modal-classes="modal-primary modal-dialog-centered">
+                <h6 slot="header" class="modal-title" id="modal-title-notification">Atualizar dados do Prêmio</h6>
+
+                <div class="py-3 text-center">
+                    <h6 class="heading mt-4">Nome</h6>
+                    <base-input alternative
+                            class="mb-3"
+                            v-model="premioEscolhido.nome"
+                            addon-left-icon="ni ni-bold">
+                    </base-input>
+                    <h6 class="heading mt-4">Ano</h6>
+                    <base-input alternative
+                            class="mb-3"
+                            v-model="premioEscolhido.ano"
+                            addon-left-icon="ni ni-time-alarm">
+                    </base-input>
+                    <h6 class="heading mt-4">Descrição</h6>
+                            <textarea class="form-control form-control-alternative" rows="3" alternative
+                                        v-model="premioEscolhido.descricao"
+                                        addon-left-icon="ni ni-align-left-2">
+                            </textarea>
+                            <br>
+                    <base-dropdown>
+                        <base-button slot="title" type="secondary" class="dropdown-toggle">
+                        {{premioEscolhido.area}}
+                        </base-button>
+                        <div v-for="area in areas" :key="area.id_area">
+                        <a class="dropdown-item" @click="(premioEscolhido.area = area.descricao, premioEscolhido.id_area_fk = area.id_area)">{{area.descricao}}</a>
+                        </div>
+                    </base-dropdown>
+                </div>
+
+                <template slot="footer">
+                    <base-button type="link"
+                                 text-color="white"
+                                 class="ml-auto"
+                                 @click="modals.upPrize = false">
+                        Close
+                    </base-button>
+                    <base-button type="white"
+                                 @click="updatePrize(premioEscolhido.id_premio)">
+                        Atualizar
                     </base-button>
                 </template>
             </modal>
@@ -209,7 +310,9 @@ export default {
         premios: [],
         modals: {
           prize: false,
-          item: false
+          item: false,
+          upPrize: false,
+          upItem: false
         },
         newCronograma: {
           data_inicio: '', 
@@ -218,6 +321,8 @@ export default {
           id_premio: 0
         },
         newPremio: {},
+        premioEscolhido: {},
+        cronogramaEscolhido: {},
         areas: [],
         areaSel: 'Área de atuação'
       }
@@ -264,6 +369,42 @@ export default {
       });
       this.getAllPremios();
       this.modals.item = false;
+    },
+
+    async infoPremio(id) {
+      await axios.get(`http://localhost:7777/premio/${id}`).then(response => {
+        this.premioEscolhido = response.data
+      });
+      this.modals.upPrize = true;
+    },
+
+    async updatePrize(id) {
+      await axios.put(`http://localhost:7777/premio/${id}`, {
+        nome: this.premioEscolhido.nome, 
+        descricao: this.premioEscolhido.descricao, 
+        ano: this.premioEscolhido.ano, 
+        id_area: this.premioEscolhido.id_area_fk
+      });
+      this.modals.upPrize = false;
+      await this.getAllPremios();
+    },
+
+    async infoCronograma(id) {
+      await axios.get(`http://localhost:7777/cronograma/${id}`).then(response => {
+        this.cronogramaEscolhido = response.data
+      });
+      this.modals.upItem = true;
+    },
+
+    async updateCronograma(id) {
+      await axios.put(`http://localhost:7777/cronograma/${id}`, {
+        data_inicio: this.cronogramaEscolhido.data_inicio, 
+        data_fim: this.cronogramaEscolhido.data_fim, 
+        item: this.cronogramaEscolhido.item, 
+        id_premio: this.cronogramaEscolhido.id_premio_fk
+      });
+      this.modals.upItem = false;
+      await this.getAllPremios();
     },
 
     async delPremio(id) {

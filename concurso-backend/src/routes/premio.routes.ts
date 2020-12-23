@@ -26,18 +26,6 @@ premioRouter.get('/', async (request, response) => {
   }
 });
 
-premioRouter.get('/:id/cronogramas', async (request, response) => {
-  try {
-    const id_premio = request.params.id;
-
-    const cronogramas = await new CronogramaService().listByPremio(id_premio);
-
-    return response.json(cronogramas);
-  } catch (error) {
-    return response.status(401).json({ error: error.message });
-  }
-});
-
 premioRouter.get('/:id', async (request, response) => {
   try {
     const id_premio = request.params.id;
