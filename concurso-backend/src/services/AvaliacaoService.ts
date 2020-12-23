@@ -101,7 +101,18 @@ class AvaliacaoService {
     public async listAvaliacoesByProjeto(id_projeto: number): Promise<Array<Avaliacao>> {
         const projeto = await Projeto.findOneOrFail({ where: { id_projeto } });
 
-        const avaliacoes = await Avaliacao.find({ where: { projeto } });
+        const avaliacoes = await getConnection()
+                        .createQueryBuilder()
+                        .select('avaliacao.*, titulo, avaliador.registro, pessoa.nome')
+                        .from(Avaliacao, '')
+                        .addFrom(Projeto, '')
+                        .addFrom(Avaliador, '')
+                        .addFrom(Pessoa, '')
+                        .where('id_avaliador_fk = id_avaliador')
+                        .andWhere('id_projeto = :id', { id: projeto.id_projeto })
+                        .andWhere('id_projeto_fk = id_projeto')
+                        .andWhere('id_pessoa_fk = id_pessoa')
+                        .getRawMany();
 
         return avaliacoes;
     }

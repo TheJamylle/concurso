@@ -92,7 +92,7 @@ class ProjetoService {
     }
 
     public async listAvaliados(): Promise<Array<Projeto>> {
-        const subQuery = await Projeto.createQueryBuilder('projeto');
+        const subQuery = Projeto.createQueryBuilder('projeto');
 
         const projetosAvaliados = await subQuery
         .where(
