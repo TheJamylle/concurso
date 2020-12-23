@@ -7,6 +7,7 @@ import Candidato from "./views/Candidato.vue";
 import Contest from "./views/Contest.vue";
 import Area from "./views/Area.vue";
 import Avaliador from "./views/Avaliador.vue";
+import Avaliacao from "./views/Avaliacao.vue";
 import Login from "./views/Login.vue";
 import Premio from "./views/Premio.vue";
 import Projeto from "./views/Projeto.vue";
@@ -33,6 +34,15 @@ export default new Router({
       components: {
         header: AppHeader,
         default: Components,
+        footer: AppFooter
+      }
+    },
+    {
+      path: "/avaliacao",
+      name: "avaliacao",
+      components: {
+        header: AppHeader,
+        default: Avaliacao,
         footer: AppFooter
       }
     },

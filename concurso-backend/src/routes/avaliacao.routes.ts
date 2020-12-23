@@ -31,7 +31,7 @@ avaliacaoRouter.get('/:id', async (request, response) => {
 
     const avaliacao = await new AvaliacaoService().getByID(id_avaliacao);
 
-    return avaliacao;
+    return response.json(avaliacao);
   } catch (error) {
     return response.status(401).json({ error: error.message });
   }

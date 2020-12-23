@@ -1,5 +1,7 @@
+import { getConnection } from 'typeorm';
 import Avaliacao from '../models/Avaliacao';
 import Avaliador from '../models/Avaliador';
+import Pessoa from '../models/Pessoa';
 import Projeto from '../models/Projeto';
 
 interface BaseAvaliacao {
@@ -60,7 +62,18 @@ class AvaliacaoService {
     }
 
     public async getByID(id_avaliacao: string): Promise<Avaliacao> {
-        const avaliacao = await Avaliacao.findOne({ where: { id_avaliacao } });
+        const avaliacao = await getConnection()
+                        .createQueryBuilder()
+                        .select('avaliacao.*, titulo, avaliador.registro, pessoa.nome')
+                        .from(Avaliacao, '')
+                        .addFrom(Projeto, '')
+                        .addFrom(Avaliador, '')
+                        .addFrom(Pessoa, '')
+                        .where('id_avaliacao = :id', { id: id_avaliacao })
+                        .andWhere('id_avaliador_fk = id_avaliador')
+                        .andWhere('id_projeto_fk = id_projeto')
+                        .andWhere('id_pessoa_fk = id_pessoa')
+                        .getRawOne();
 
         if(!avaliacao) {
             throw new Error("Avaliação não encontrada");
@@ -70,7 +83,17 @@ class AvaliacaoService {
     }
 
     public async list(): Promise<Array<Avaliacao>> {
-        const avaliacoes = await Avaliacao.find();
+        const avaliacoes = await getConnection()
+            .createQueryBuilder()
+            .select('avaliacao.*, titulo, avaliador.registro, pessoa.nome')
+            .from(Avaliacao, '')
+            .addFrom(Projeto, '')
+            .addFrom(Avaliador, '')
+            .addFrom(Pessoa, '')
+            .where('id_avaliador_fk = id_avaliador')
+            .andWhere('id_projeto_fk = id_projeto')
+            .andWhere('id_pessoa_fk = id_pessoa')
+            .getRawMany();
 
         return avaliacoes;
     }
