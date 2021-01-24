@@ -167,7 +167,6 @@ export default {
       await axios.get(`http://localhost:7777/pessoa/avaliadores/${insc}`).then(response => {
         this.avaliadorEscolhido = response.data
       });
-      this.avaliadorEscolhido.endereco = JSON.parse(this.avaliadorEscolhido.endereco);
       this.avaliadorEscolhido.data_nascimento = this.estilizaData(this.avaliadorEscolhido.data_nascimento);
       this.modal = true;
     },

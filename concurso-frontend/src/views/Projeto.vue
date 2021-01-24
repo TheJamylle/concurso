@@ -113,6 +113,14 @@
                            class="ni ni-trophy"></i></a>
                     </tab-pane>
                 </tabs>
+
+            <modal :show.sync="rated"
+                   gradient="primary"
+                   modal-classes="modal-primary modal-dialog-centered">
+                <template>
+                  {{ projetosRated }}
+                </template>
+              </modal>
     </section>
 </template>
 <script>
@@ -146,6 +154,7 @@ export default {
   mounted () {
     this.getAllProjetos();
     this.getAreas();
+    this.getProjetosRated();
   },
 
   methods: {
@@ -154,6 +163,12 @@ export default {
         .then(response => {
           this.projetos = response.data
         });
+    },
+
+    async getProjetosRated() {
+      axios.get(`http://localhost:7777/projeto/avaliados`).then(response => {
+        this.projetosRated = response.data
+      });
     },
 
     async getAreas() {

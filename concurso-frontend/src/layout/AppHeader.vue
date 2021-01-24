@@ -58,7 +58,6 @@
                     <router-link to="/projeto" class="dropdown-item">Projetos</router-link>
                     <router-link to="/candidato" class="dropdown-item">Candidatos</router-link>
                     <router-link to="/avaliacao" class="dropdown-item">Avaliações</router-link>
-                    <router-link to="/register" class="dropdown-item">Register</router-link>
                 </base-dropdown>
             </ul>
             <ul class="navbar-nav align-items-lg-center ml-lg-auto">
