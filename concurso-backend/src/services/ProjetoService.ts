@@ -134,6 +134,11 @@ class ProjetoService {
         .where('id_premio_fk IS NOT NULL')
         .orderBy('nota_media', 'DESC')
         .getRawMany();
+
+        for(let i = 0; i < projetos.length; i++) {
+            projetos[i].autores = await new PessoaService()
+            .listCandidatosByProjeto(projetos[i].id_projeto);
+        }
         
         return projetos;
     }

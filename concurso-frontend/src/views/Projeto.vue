@@ -168,7 +168,7 @@
                     </tr>
                 </thead>
                 <tbody>
-                    <tr v-for="pro in projetosRated" :key="pro.projeto_id_projeto">
+                    <tr v-for="pro in projetosNotRated" :key="pro.projeto_id_projeto">
                     <th scope="row">{{ pro.projeto_id_projeto }}</th>
                     <td>{{ pro.projeto_titulo }}</td>
                     <td><p v-for="cand in pro.autores" :key="cand.id_candidato">{{ cand.nome }}</p></td>
@@ -182,30 +182,27 @@
                    gradient="success"
                    modal-classes="modal-success modal-dialog-centered">
                    <h5 slot="header" style="color: #fff" class="modal-title" id="modal-title-notification">
-                     Projetos Avaliados
+                     Projetos Vencedores
                    </h5>
                 <template>
-                  <table class="table mt-1" style="background: transparent; border-radius: 7px; opacity: 0.95; font-size: 14px">
+                  <table class="table mt-1" style="background: transparent; border-radius: 7px; opacity: 0.95; ">
                 <thead style="background: #fff" class="title text-success">
                     <tr>
                     <th scope="col">Nº</th>
                     <th scope="col">Titulo</th>
                     <th scope="col">Autores</th>
-                    <th scope="col">Avaliadores</th>
                     <th scope="col">Nota Final</th>
                     </tr>
                 </thead>
                 <tbody>
-                    <tr v-for="pro in projetosWinners" :key="pro.projeto_id_projeto">
-                    <th scope="row">{{ pro.projeto_id_projeto }}</th>
-                    <td>{{ pro.projeto_titulo }}</td>
+                    <tr v-for="pro in projetosWinners" :key="pro.id_projeto">
+                    <th scope="row">{{ pro.id_projeto }}</th>
+                    <td>{{ pro.titulo }}</td>
                     <td><p v-for="cand in pro.autores" :key="cand.id_candidato">{{ cand.nome }}</p></td>
-                    <td><p v-for="ava in pro.avaliacoes" :key="ava.id_avaliacao">{{ ava.nome }}</p></td>
-                    <td><p v-for="ava in pro.avaliacoes" :key="ava.id_avaliacao">{{ ava.nota }}</p></td>
+                    <td><center>{{ pro.nota_media }}</center></td>
                     </tr>
                 </tbody>
                   </table>
-                  {{projetosWinners}}
                 </template>
             </modal>
     </section>
@@ -245,6 +242,7 @@ export default {
     this.getProjetosRated();
     this.getProjetosNoRated();
     this.getAllPremios();
+    this.getProjetosWinners();
   },
 
   methods: {
