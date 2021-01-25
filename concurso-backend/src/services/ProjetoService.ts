@@ -37,7 +37,7 @@ class ProjetoService {
 
         const projeto = await Projeto.findOneOrFail({ where: { id_projeto } });
 
-        const premio = await Premio.findOne({ where: { id_premio_fk } });
+        const premio = await Premio.findOne({ where: { id_premio: id_premio_fk } });
 
         projeto.titulo = titulo;
         projeto.resumo = resumo;
