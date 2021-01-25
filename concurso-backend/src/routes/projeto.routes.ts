@@ -71,9 +71,9 @@ projetoRouter.put('/:id', async (request, response) => {
   try {
     const id_projeto = request.params.id;
 
-    const { titulo, resumo, data_envio, id_area } = request.body;
+    const { titulo, resumo, data_envio, id_area, id_premio_fk } = request.body;
 
-    const projetoUpdated = await new ProjetoService().update({ titulo, resumo, data_envio, id_area }, id_projeto);
+    const projetoUpdated = await new ProjetoService().update({ titulo, resumo, data_envio, id_area }, id_projeto, id_premio_fk);
 
     return response.json(projetoUpdated);
   } catch (error) {

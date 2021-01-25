@@ -77,9 +77,17 @@
                                                     addon-left-icon="ni ni-collection">
                                         </textarea>
                                         <hr>
+                                        <p style="color: #fff"><b>Área</b></p>
                                         <div id="sel" v-for="area in areas" :key="area.id_area">
                                             <base-radio :value="area.id_area" :name="area.id_area" v-model="projetoEscolhido.id_area_fk" class="mb-3">
                                             {{ area.descricao }}
+                                            </base-radio>
+                                        </div>
+                                        <hr>
+                                        <p style="color: #fff"><b>Prêmio</b></p>
+                                        <div id="sad" v-for="premio in premios" :key="premio.id_premio">
+                                            <base-radio :value="premio.id_premio" :name="premio.id_premio" v-model="projetoEscolhido.id_premio_fk" class="mb-3">
+                                            {{ premio.nome }}
                                             </base-radio>
                                         </div>
                                     </form>
@@ -101,7 +109,7 @@
             </div>
             <br>
             <modal-projeto></modal-projeto>
-            <tabs :fill="false" circle style="position: fixed; margin-left: 80%;margin-top: -600px">
+            <tabs :fill="false" circle style="position: absolute; margin-left: 80%;">
                 <tab-pane>
                     <a slot="title" class="nav-link-icon d-block" title="Projetos Avaliados" @click="rated = true"><i class="ni ni-paper-diploma" ></i></a>
                 </tab-pane>
@@ -117,10 +125,89 @@
             <modal :show.sync="rated"
                    gradient="primary"
                    modal-classes="modal-primary modal-dialog-centered">
+                   <h5 slot="header" style="color: #fff" class="modal-title" id="modal-title-notification">
+                     Projetos Avaliados
+                   </h5>
                 <template>
-                  {{ projetosRated }}
+                  <table class="table mt-1" style="background: transparent; border-radius: 7px; opacity: 0.95; font-size: 14px">
+                <thead style="background: #fff" class="title text-primary">
+                    <tr>
+                    <th scope="col">Nº</th>
+                    <th scope="col">Titulo</th>
+                    <th scope="col">Autores</th>
+                    <th scope="col">Avaliadores</th>
+                    <th scope="col">Avaliações</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr v-for="pro in projetosRated" :key="pro.projeto_id_projeto">
+                    <th scope="row">{{ pro.projeto_id_projeto }}</th>
+                    <td>{{ pro.projeto_titulo }}</td>
+                    <td><p v-for="cand in pro.autores" :key="cand.id_candidato">{{ cand.nome }}</p></td>
+                    <td><p v-for="ava in pro.avaliacoes" :key="ava.id_avaliacao">{{ ava.nome }}</p></td>
+                    <td><p v-for="ava in pro.avaliacoes" :key="ava.id_avaliacao">{{ ava.nota }}</p></td>
+                    </tr>
+                </tbody>
+                  </table>
                 </template>
-              </modal>
+            </modal>
+
+            <modal :show.sync="notRated"
+                   gradient="danger"
+                   modal-classes="modal-danger modal-dialog-centered">
+                <template>
+                  <h5 slot="header" style="color: #fff" class="modal-title" id="modal-title-notification">
+                     Projetos Não Avaliados
+                   </h5>
+                   <table class="table mt-1" style="background: transparent; border-radius: 7px; opacity: 0.95; font-size: 14px">
+                <thead style="background: #fff" class="title text-danger">
+                    <tr>
+                    <th scope="col">Nº</th>
+                    <th scope="col">Titulo</th>
+                    <th scope="col">Autores</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr v-for="pro in projetosRated" :key="pro.projeto_id_projeto">
+                    <th scope="row">{{ pro.projeto_id_projeto }}</th>
+                    <td>{{ pro.projeto_titulo }}</td>
+                    <td><p v-for="cand in pro.autores" :key="cand.id_candidato">{{ cand.nome }}</p></td>
+                    </tr>
+                </tbody>
+                  </table>
+                </template>
+            </modal>
+
+            <modal :show.sync="winner"
+                   gradient="success"
+                   modal-classes="modal-success modal-dialog-centered">
+                   <h5 slot="header" style="color: #fff" class="modal-title" id="modal-title-notification">
+                     Projetos Avaliados
+                   </h5>
+                <template>
+                  <table class="table mt-1" style="background: transparent; border-radius: 7px; opacity: 0.95; font-size: 14px">
+                <thead style="background: #fff" class="title text-success">
+                    <tr>
+                    <th scope="col">Nº</th>
+                    <th scope="col">Titulo</th>
+                    <th scope="col">Autores</th>
+                    <th scope="col">Avaliadores</th>
+                    <th scope="col">Nota Final</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr v-for="pro in projetosWinners" :key="pro.projeto_id_projeto">
+                    <th scope="row">{{ pro.projeto_id_projeto }}</th>
+                    <td>{{ pro.projeto_titulo }}</td>
+                    <td><p v-for="cand in pro.autores" :key="cand.id_candidato">{{ cand.nome }}</p></td>
+                    <td><p v-for="ava in pro.avaliacoes" :key="ava.id_avaliacao">{{ ava.nome }}</p></td>
+                    <td><p v-for="ava in pro.avaliacoes" :key="ava.id_avaliacao">{{ ava.nota }}</p></td>
+                    </tr>
+                </tbody>
+                  </table>
+                  {{projetosWinners}}
+                </template>
+            </modal>
     </section>
 </template>
 <script>
@@ -144,6 +231,7 @@ export default {
        winner: false,
        notRated: false,
        areas: [],
+       premios: [],
        projetoEscolhido: {},
        projetosWinners: [],
        projetosRated: [],
@@ -155,6 +243,8 @@ export default {
     this.getAllProjetos();
     this.getAreas();
     this.getProjetosRated();
+    this.getProjetosNoRated();
+    this.getAllPremios();
   },
 
   methods: {
@@ -165,9 +255,30 @@ export default {
         });
     },
 
+    async getAllPremios() {
+      console.log(this.premios);
+      await axios.get(`http://localhost:7777/premio`)
+        .then(response => {
+          this.premios = response.data
+      });
+      console.log(this.premios);
+    },
+
     async getProjetosRated() {
       axios.get(`http://localhost:7777/projeto/avaliados`).then(response => {
         this.projetosRated = response.data
+      });
+    },
+
+    async getProjetosNoRated() {
+      axios.get(`http://localhost:7777/projeto/naoavaliados`).then(response => {
+        this.projetosNotRated = response.data
+      });
+    },
+
+    async getProjetosWinners() {
+      axios.get(`http://localhost:7777/projeto/vencedores`).then(response => {
+        this.projetosWinners = response.data
       });
     },
 
@@ -186,11 +297,13 @@ export default {
     },
 
     async update(id) {
+      console.log(this.projetoEscolhido);
       await axios.put(`http://localhost:7777/projeto/${id}`, {
         titulo: this.projetoEscolhido.titulo, 
         resumo: this.projetoEscolhido.resumo, 
         data_envio: new Date(), 
-        id_area: this.projetoEscolhido.id_area_fk
+        id_area: this.projetoEscolhido.id_area_fk,
+        id_premio_fk: this.projetoEscolhido.id_premio_fk
       }).then();
       this.getAllProjetos();
       this.modal = false;

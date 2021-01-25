@@ -1,6 +1,7 @@
 import { getConnection } from 'typeorm';
 import Area from '../models/Area';
 import Avaliacao from '../models/Avaliacao';
+import Premio from '../models/Premio';
 import Projeto from '../models/Projeto';
 import AvaliacaoService from './AvaliacaoService';
 import PessoaService from './PessoaService';
@@ -31,15 +32,18 @@ class ProjetoService {
 
     public async update(
         { titulo, resumo, data_envio, id_area }: BaseProjeto, 
-        id_projeto: string): Promise<Projeto> {
+        id_projeto: string, id_premio_fk: string | undefined): Promise<Projeto> {
         const area = await Area.findOneOrFail({ where: { id_area } });
 
         const projeto = await Projeto.findOneOrFail({ where: { id_projeto } });
+
+        const premio = await Premio.findOne({ where: { id_premio_fk } });
 
         projeto.titulo = titulo;
         projeto.resumo = resumo;
         projeto.data_envio = data_envio;
         projeto.area = area;
+        projeto.premio = premio || undefined;
         await projeto.save();
 
         return projeto;
